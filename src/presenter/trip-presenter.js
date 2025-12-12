@@ -34,7 +34,7 @@ export default class TripPresenter {
       const destination = this.pointsModel.getDestinationById(point.destination);
       const offers = this.pointsModel.getOffersByType(point.type)
         .filter((offer) => point.offers.includes(offer.id));
-      render(new PointView({point, offers, destination}),  this.eventList.getElement());
+      render(new PointView({point, offers, destination}), this.eventList.getElement());
     }
   }
 }

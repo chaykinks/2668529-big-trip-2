@@ -9,7 +9,9 @@ const createTypeTemplate = (type) => `<div class="event__type-item">
   </div>`;
 
 const createOfferListTemplate = (offers = [], checkedOffers = []) => {
-  if (!offers.length) return '';
+  if (!offers.length) {
+    return '';
+  }
   return `<section class="event__section event__section--offers">
       <h3 class="event__section-title event__section-title--offers">Offers</h3>
       <div class="event__available-offers">
@@ -25,11 +27,13 @@ const createOfferListTemplate = (offers = [], checkedOffers = []) => {
           </div>
         `).join('')}
       </div>
-    </section>`
+    </section>`;
 };
 
 const createDestinationTemplate = (destination = {}) => {
-  if (!destination) return '';
+  if (!destination) {
+    return '';
+  }
   return `<section class="event__section event__section--destination">
       <h3 class="event__section-title event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${destination.description || ''}</p>
@@ -97,7 +101,7 @@ function createNewFormTemplate(point, offers, checkedOffers, destination) {
           ${createDestinationTemplate(destination)}
         </section>
       </form>
-    </li>`
+    </li>`;
 }
 
 export default class NewFormView {

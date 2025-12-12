@@ -26,6 +26,6 @@ export default class PointsModel {
 
   getOfferById(type, offerIds = []) {
     const offers = this.getOffersByType(type);
-    return offers.filter(offer => offerIds.includes(offer.id));
+    return offers.filter((offer) => offerIds.includes(offer.id));
   }
 }

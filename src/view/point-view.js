@@ -8,7 +8,7 @@ function createOfferTemplate({title, price}) {
                     &plus;&euro;&nbsp;
                     <span class="event__offer-price">${price}</span>
                   </li>`
-  )
+  );
 }
 
 function createPointTemplate(point, offers, destination) {
