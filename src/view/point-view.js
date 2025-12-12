@@ -1,5 +1,5 @@
 import { createElement } from '../render.js';
-import {humanizePointDate, humanizePointTime} from '../utils.js';
+import { humanizePointDate, humanizePointTime, getEventDuration } from '../utils.js';
 
 function createOfferTemplate({title, price}) {
   return(
@@ -11,7 +11,7 @@ function createOfferTemplate({title, price}) {
   )
 }
 
-function createEventTemplate(point, offers, destination) {
+function createPointTemplate(point, offers, destination) {
   const {basePrice, dateFrom, dateTo, type, isFavorite} = point;
   const {name} = destination;
 
@@ -29,7 +29,7 @@ function createEventTemplate(point, offers, destination) {
                     &mdash;
                     <time class="event__end-time" datetime="${dateTo}">${humanizePointTime(dateTo)}</time>
                   </p>
-                  <p class="event__duration">30M</p>
+                  <p class="event__duration">${getEventDuration(dateFrom, dateTo)}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -52,7 +52,7 @@ function createEventTemplate(point, offers, destination) {
   );
 }
 
-export default class EventView {
+export default class PointView {
   constructor({point, offers, destination}) {
     this.point = point;
     this.offers = offers;
@@ -60,7 +60,7 @@ export default class EventView {
   }
 
   getTemplate() {
-    return createEventTemplate(this.point, this.offers, this.destination);
+    return createPointTemplate(this.point, this.offers, this.destination);
   }
 
   getElement() {

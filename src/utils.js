@@ -15,4 +15,11 @@ function humanizePointTime(date) {
   return date ? dayjs(date).format(TIME_FORMAT) : '';
 }
 
-export {getRandomArrayElement, humanizePointDate, humanizePointTime};
+function getEventDuration(dateFrom, dateTo) {
+  const start = dayjs(dateFrom);
+  const end = dayjs(dateTo);
+  const diffMinutes = end.diff(start, 'minute');
+  return `${diffMinutes}M`;
+}
+
+export {getRandomArrayElement, humanizePointDate, humanizePointTime, getEventDuration};
