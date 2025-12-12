@@ -166,8 +166,15 @@ function createNewFormTemplate() {
 }
 
 export default class NewFormView {
+  constructor({point, offers, checkedOffers, destination}) {
+    this.point = point;
+    this.offers = offers;
+    this.checkedOffers = checkedOffers;
+    this.destination = destination;
+  }
+
   getTemplate() {
-    return createNewFormTemplate();
+    return createNewFormTemplate(this.point, this.offers, this.checkedOffers, this.destination);
   }
 
   getElement() {

@@ -1,57 +1,27 @@
 export const mockDestinations = [
   {
-    'id': 'cfe416cq-10xa-ye10-8077-2fs9a01edcab',
-    'description': 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
-    'name': 'Chamonix',
-    'pictures': [
-      {
-        'src': 'http://picsum.photos/300/200?r=0.0762563005163317',
-        'description': 'Chamonix parliament building'
-      }
+    id: 'dest-1',
+    description: 'Amsterdam is a beautiful canal city with rich culture.',
+    name: 'Amsterdam',
+    pictures: [
+      { src: 'https://loremflickr.com/248/152?random=1', description: 'Amsterdam canal' },
+      { src: 'https://loremflickr.com/248/152?random=2', description: 'City center' }
     ]
   },
   {
-    'id': 'cfe416cq-10xa-ye10-8077-2fs9a01edcab1',
-    'description': 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
-    'name': 'Chamonix',
-    'pictures': [
-      {
-        'src': 'http://picsum.photos/300/200?r=0.0762563005163317',
-        'description': 'Chamonix parliament building'
-      }
+    id: 'dest-2',
+    description: 'Geneva is surrounded by mountains and Lake Geneva.',
+    name: 'Geneva',
+    pictures: [
+      { src: 'https://loremflickr.com/248/152?random=3', description: 'Lake view' }
     ]
   },
   {
-    'id': 'cfe416cq-10xa-ye10-8077-2fs9a01edcab2',
-    'description': 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
-    'name': 'Chamonix',
-    'pictures': [
-      {
-        'src': 'http://picsum.photos/300/200?r=0.0762563005163317',
-        'description': 'Chamonix parliament building'
-      }
-    ]
-  },
-  {
-    'id': 'cfe416cq-10xa-ye10-8077-2fs9a01edcab3',
-    'description': 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
-    'name': 'Chamonix',
-    'pictures': [
-      {
-        'src': 'http://picsum.photos/300/200?r=0.0762563005163317',
-        'description': 'Chamonix parliament building'
-      }
-    ]
-  },
-  {
-    'id': 'cfe416cq-10xa-ye10-8077-2fs9a01edcab4',
-    'description': 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
-    'name': 'Chamonix',
-    'pictures': [
-      {
-        'src': 'http://picsum.photos/300/200?r=0.0762563005163317',
-        'description': 'Chamonix parliament building'
-      }
+    id: 'dest-3',
+    description: 'Chamonix is a famous mountain resort at the foot of Mont Blanc.',
+    name: 'Chamonix',
+    pictures: [
+      { src: 'https://loremflickr.com/248/152?random=4', description: 'Mountains' }
     ]
   }
 ];

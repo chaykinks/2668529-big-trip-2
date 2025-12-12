@@ -1,13 +1,18 @@
 import dayjs from 'dayjs';
 
-const DATE_FORMAT = 'D MMMM';
+const DATE_FORMAT = 'MMM DD';
+const TIME_FORMAT = 'HH:mm';
 
 function getRandomArrayElement(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
-function humanizePointDueDate(dueDate) {
-  return dueDate ? dayjs(dueDate).format(DATE_FORMAT) : '';
+function humanizePointDate(date) {
+  return date ? dayjs(date).format(DATE_FORMAT) : '';
 }
 
-export {getRandomArrayElement, humanizePointDueDate};
+function humanizePointTime(date) {
+  return date ? dayjs(date).format(TIME_FORMAT) : '';
+}
+
+export {getRandomArrayElement, humanizePointDate, humanizePointTime};
