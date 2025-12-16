@@ -8,7 +8,8 @@ const mockPoints = [
     dateTo: '2019-07-11T11:22:13.375Z',
     destination: 'dest-1',
     isFavorite: false,
-    offers: ['of-taxi-1', 'of-taxi-2'],
+    offers: ['of-taxi-1',
+      'of-taxi-2'],
     type: 'taxi'
   },
   {
@@ -38,7 +39,8 @@ const mockPoints = [
     dateTo: '2019-09-01T12:00:00.000Z',
     destination: 'dest-1',
     isFavorite: false,
-    offers: ['of-flight-1', 'of-flight-2'],
+    offers: ['of-flight-1',
+      'of-flight-2'],
     type: 'flight'
   },
   {
