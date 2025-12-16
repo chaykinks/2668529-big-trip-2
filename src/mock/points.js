@@ -58,7 +58,7 @@ const mockPoints = [
     basePrice: 900,
     dateFrom: '2019-11-01T10:00:00.000Z',
     dateTo: '2019-11-01T12:00:00.000Z',
-    destination: null,
+    destination: 'dest-3',
     isFavorite: false,
     offers: [],
     type: 'bus'

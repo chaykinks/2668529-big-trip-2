@@ -15,7 +15,7 @@ const createTypeTemplate = (type, currentType, id) => {
 
 const createOfferTemplate = (offer, selectedOfferIds = []) => {
   const { id, title, price } = offer;
-  const isChecked = selectedOfferIds.includes(Number(id)) ? 'checked' : '';
+  const isChecked = selectedOfferIds.includes(id) ? 'checked' : '';
 
   return `<div class="event__offer-selector">
       <input class="event__offer-checkbox visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" ${isChecked}>
@@ -56,9 +56,13 @@ const createPhotosTemplate = (pictures) => {
 };
 
 const createDestinationTemplate = (destination) => {
-  if (!destination) return '';
+  if (!destination) {
+    return '';
+  }
   const { description = '', pictures = [] } = destination;
-  if (!description && !pictures.length) return '';
+  if (!description && !pictures.length) {
+    return '';
+  }
   return `<section class="event__section event__section--destination">
     <h3 class="event__section-title event__section-title--destination">Destination</h3>
     <p class="event__destination-description">${description}</p>
