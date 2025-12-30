@@ -1,25 +1,82 @@
 import { render, RenderPosition } from '../render.js';
 import FilterView from '../view/filter-view.js';
 import SortView from '../view/sort-view.js';
-import NewFormView from '../view/new-form-view.js';
-import EventListView from '../view/event-list-view.js';
-import EventView from '../view/event-view.js';
+import PointListView from '../view/point-list-view.js';
+import PointView from '../view/point-view.js';
+import FormView from '../view/form-view.js';
 
 export default class TripPresenter {
-  constructor(filtersContainer, tripEventsContainer) {
+  constructor({ filtersContainer, tripEventsContainer, pointsModel }) {
     this.filtersContainer = filtersContainer;
     this.tripEventsContainer = tripEventsContainer;
+    this.pointsModel = pointsModel;
+
+    this.tripPoints = [];
+    this.eventList = null;
   }
 
   init() {
+    this.tripPoints = [...this.pointsModel.getPoints()];
 
     render(new FilterView(), this.filtersContainer, RenderPosition.BEFOREEND);
     render(new SortView(), this.tripEventsContainer, RenderPosition.AFTERBEGIN);
-    render(new NewFormView(), this.tripEventsContainer);
-    this.eventList = new EventListView();
+
+    this.eventList = new PointListView();
     render(this.eventList, this.tripEventsContainer);
-    for (let i = 0; i < 3; i++) {
-      render(new EventView(), this.eventList.getElement());
-    }
+
+    this.renderNewPointForm();
+    this.renderEditForm(this.tripPoints[0]);
+    this.tripPoints.forEach((point) => this.renderPoint(point));
+  }
+
+  renderNewPointForm() {
+    const blankPoint = {
+      id: null,
+      type: 'taxi',
+      dateFrom: '2019-03-18T10:30',
+      dateTo: '2019-03-18T11:00',
+      basePrice: '',
+      offers: [],
+      destination: null,
+    };
+
+    const offers = this.pointsModel.getOffersByType(blankPoint.type);
+    const destination = null;
+
+    const form = new FormView({
+      point: blankPoint,
+      offers,
+      selectedOffers: [],
+      destination,
+      isNew: true,
+    });
+
+    render(form, this.eventList.getElement(), RenderPosition.AFTERBEGIN);
+  }
+
+  renderEditForm(point) {
+    const offers = this.pointsModel.getOffersByType(point.type);
+    const destination = this.pointsModel.getDestinationById(point.destination);
+
+    const form = new FormView({
+      point,
+      offers,
+      selectedOffers: point.offers,
+      destination,
+      isNew: false,
+    });
+
+    render(form, this.eventList.getElement(), RenderPosition.BEFOREEND);
+  }
+
+  renderPoint(point) {
+    const destination = this.pointsModel.getDestinationById(point.destination);
+    const offers = this.pointsModel
+      .getOffersByType(point.type)
+      .filter((offer) => point.offers.includes(offer.id));
+
+    const pointView = new PointView({ point, offers, destination });
+
+    render(pointView, this.eventList.getElement(), RenderPosition.BEFOREEND);
   }
 }
