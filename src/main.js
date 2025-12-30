@@ -1,5 +1,5 @@
 import TripPresenter from './presenter/trip-presenter.js';
-import PointsModel from './model/points-model';
+import PointsModel from './model/points-model.js';
 
 const filtersContainer = document.querySelector('.trip-controls__filters');
 const tripEventsContainer = document.querySelector('.trip-events');
