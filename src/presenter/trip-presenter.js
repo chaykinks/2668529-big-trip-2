@@ -6,36 +6,29 @@ import FormView from '../view/form-view.js';
 import { BLANK_POINT } from '../const.js';
 
 export default class TripPresenter {
-
   #tripEventsContainer = null;
   #pointsModel = null;
-  #tripPoints = null;
+  #tripPoints = [];
   #eventList = null;
 
   constructor({ tripEventsContainer, pointsModel }) {
     this.#tripEventsContainer = tripEventsContainer;
     this.#pointsModel = pointsModel;
-    this.#tripPoints = [];
   }
 
   init() {
     this.#tripPoints = [...this.#pointsModel.points];
-
     render(new SortView(), this.#tripEventsContainer, RenderPosition.AFTERBEGIN);
-
     this.#eventList = new PointListView();
     render(this.#eventList, this.#tripEventsContainer);
-
-    this.renderNewPointForm();
-    this.renderEditForm(this.#tripPoints[0]);
-    this.#tripPoints.forEach((point) => this.renderPoint(point));
+    this.#renderNewPointForm();
+    this.#renderEditForm(this.#tripPoints[0]);
+    this.#tripPoints.forEach((point) => this.#renderPoint(point));
   }
 
-  renderNewPointForm() {
-
+  #renderNewPointForm() {
     const offers = this.#pointsModel.getOffersByType(BLANK_POINT.type);
     const destination = null;
-
     const form = new FormView({
       point: BLANK_POINT,
       offers,
@@ -43,14 +36,12 @@ export default class TripPresenter {
       destination,
       isNew: true,
     });
-
     render(form, this.#eventList.element, RenderPosition.AFTERBEGIN);
   }
 
-  renderEditForm(point) {
+  #renderEditForm(point) {
     const offers = this.#pointsModel.getOffersByType(point.type);
     const destination = this.#pointsModel.getDestinationById(point.destination);
-
     const form = new FormView({
       point,
       offers,
@@ -58,18 +49,15 @@ export default class TripPresenter {
       destination,
       isNew: false,
     });
-
     render(form, this.#eventList.element, RenderPosition.BEFOREEND);
   }
 
-  renderPoint(point) {
+  #renderPoint(point) {
     const destination = this.#pointsModel.getDestinationById(point.destination);
     const offers = this.#pointsModel
       .getOffersByType(point.type)
       .filter((offer) => point.offers.includes(offer.id));
-
     const pointView = new PointView({ point, offers, destination });
-
     render(pointView, this.#eventList.element, RenderPosition.BEFOREEND);
   }
 }
