@@ -166,13 +166,19 @@ function createFormTemplate(point, offers, selectedOffers, destination, isNew) {
 }
 
 export default class FormView extends AbstractView {
-  constructor({ point, offers, selectedOffers, destination, isNew }) {
+  #onSubmit = null;
+  #onRollupClick = null;
+
+  constructor({ point, offers, selectedOffers, destination, isNew, onSubmit, onRollupClick }) {
     super();
     this.point = point;
     this.offers = offers;
     this.selectedOffers = selectedOffers;
     this.destination = destination;
     this.isNew = isNew;
+    this.#onSubmit = onSubmit;
+    this.#onRollupClick = onRollupClick;
+    this.#bindHandlers();
   }
 
   get template() {
@@ -184,4 +190,29 @@ export default class FormView extends AbstractView {
       this.isNew
     );
   }
+
+  get formElement() {
+    return this.element.querySelector('form');
+  }
+
+  get rollupButton() {
+    return this.element.querySelector('.event__rollup-btn');
+  }
+
+  #bindHandlers() {
+    this.formElement?.addEventListener('submit', this.#submitHandler);
+    if (!this.isNew) {
+      this.rollupButton?.addEventListener('click', this.#rollupClickHandler);
+    }
+  }
+
+  #submitHandler = (evt) => {
+    evt.preventDefault();
+    this.#onSubmit?.();
+  };
+
+  #rollupClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#onRollupClick?.();
+  };
 }
