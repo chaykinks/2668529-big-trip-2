@@ -27,8 +27,8 @@ const mockPoints = [
   {
     id: 'point-3',
     basePrice: 2500,
-    dateFrom: '2026-01-12T22:55:56.845Z',
-    dateTo: '2026-01-13T11:22:13.375Z',
+    dateFrom: '2026-01-13T00:55:56.845Z',
+    dateTo: '2026-01-14T11:22:13.375Z',
     destination: 'dest-3',
     isFavorite: true,
     offers: ['of-drive-1'],
@@ -50,8 +50,8 @@ const mockPoints = [
   {
     id: 'point-5',
     basePrice: 800,
-    dateFrom: '2019-10-05T14:00:00.000Z',
-    dateTo: '2019-10-05T16:30:00.000Z',
+    dateFrom: '2026-01-30T14:00:00.000Z',
+    dateTo: '2026-02-01T16:30:00.000Z',
     destination: 'dest-2',
     isFavorite: true,
     offers: ['of-sightseeing-1'],
