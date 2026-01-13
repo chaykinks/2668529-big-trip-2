@@ -3,7 +3,6 @@ import SortView from '../view/sort-view';
 import PointListView from '../view/point-list-view.js';
 import PointView from '../view/point-view.js';
 import FormView from '../view/form-view.js';
-import { BLANK_POINT } from '../const.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -23,16 +22,8 @@ export default class TripPresenter {
     render(new SortView(), this.#tripEventsContainer, RenderPosition.AFTERBEGIN);
     this.#eventList = new PointListView();
     render(this.#eventList, this.#tripEventsContainer);
-    // this.#renderNewPointForm();
     this.#tripPoints.forEach((point) => this.#renderPoint(point));
     document.addEventListener('keydown', this.#handleFormEscKeyDown);
-  }
-
-  #renderNewPointForm() {
-    const offers = this.#pointsModel.getOffersByType(BLANK_POINT.type);
-    const destination = null;
-    const form = new FormView({point: BLANK_POINT, offers, selectedOffers: [], destination, isNew: true});
-    render(form, this.#eventList.element, RenderPosition.AFTERBEGIN);
   }
 
   #renderPoint(point) {
@@ -70,7 +61,6 @@ export default class TripPresenter {
   }
 
   #replacePointToForm(pointView, formView) {
-    // Закрываем открытую форму, если она не для текущей точки
     if (this.#openedFormView && this.#openedFormView !== formView && this.#openedPointView) {
       replace(this.#openedPointView, this.#openedFormView);
     }
