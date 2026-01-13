@@ -1,20 +1,9 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { FilterType } from '../const.js';
 
-function createFilterTemplate(filterItems, currentFilterType) {
-  const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join('');
-
-  return `
-    <form class="trip-filters" action="#" method="get">
-      ${filterItemsTemplate}
-      <button class="visually-hidden" type="submit">Accept filter</button>
-    </form>`;
-}
-
 function createFilterItemTemplate(filter, currentFilterType) {
   const { type, count } = filter;
   const labelText = type.charAt(0).toUpperCase() + type.slice(1);
-
   const isChecked = type === currentFilterType ? 'checked' : '';
   const isDisabled = count === 0 ? 'disabled' : '';
 
@@ -28,6 +17,16 @@ function createFilterItemTemplate(filter, currentFilterType) {
       </label>
     </div>
   `;
+}
+
+function createFilterTemplate(filters, currentType) {
+  const filterItemsTemplate = filters.map((filter) => createFilterItemTemplate(filter, currentType)).join('');
+
+  return `
+    <form class="trip-filters" action="#" method="get">
+      ${filterItemsTemplate}
+      <button class="visually-hidden" type="submit">Accept filter</button>
+    </form>`;
 }
 
 export default class FilterView extends AbstractView {
