@@ -9,8 +9,9 @@ export default class TripPresenter {
   #tripEventsContainer = null;
   #pointsModel = null;
   #tripPoints = [];
-  #eventList = null;
-  #emptyListView = null;
+  #eventList = new PointListView();
+  #emptyListView = new EmptyListView();
+  #sortComponent = new SortView();
   #openedPointView = null;
   #openedFormView = null;
 
@@ -21,22 +22,20 @@ export default class TripPresenter {
 
   init() {
     this.#tripPoints = [...this.#pointsModel.points];
-
-    if (this.#tripPoints.length === 0) {
-      this.#renderEmptyList();
-    } else {
-      render(new SortView(), this.#tripEventsContainer, RenderPosition.AFTERBEGIN);
-      this.#eventList = new PointListView();
-      render(this.#eventList, this.#tripEventsContainer);
-      this.#tripPoints.forEach((point) => this.#renderPoint(point));
-    }
-
+    this.#renderApp();
     document.addEventListener('keydown', this.#handleFormEscKeyDown);
   }
 
+  #renderSort() {
+    render(this.#sortComponent, this.#tripEventsContainer, RenderPosition.AFTERBEGIN);
+  }
+
   #renderEmptyList() {
-    this.#emptyListView = new EmptyListView();
     render(this.#emptyListView, this.#tripEventsContainer);
+  }
+
+  #renderEventList() {
+    render(this.#eventList, this.#tripEventsContainer);
   }
 
   #renderPoint(point) {
@@ -71,6 +70,16 @@ export default class TripPresenter {
     });
 
     render(pointView, this.#eventList.element, RenderPosition.BEFOREEND);
+  }
+
+  #renderApp() {
+    if (this.#tripPoints.length === 0) {
+      this.#renderEmptyList();
+      return;
+    }
+    this.#renderSort();
+    this.#renderEventList();
+    this.#tripPoints.forEach((point) => this.#renderPoint(point));
   }
 
   #replacePointToForm(pointView, formView) {
