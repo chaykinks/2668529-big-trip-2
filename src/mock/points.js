@@ -1,8 +1,9 @@
-import {getRandomArrayElement} from '../utils/common.js';
+import { getRandomArrayElement } from '../utils/common.js';
+import { nanoid } from 'nanoid';
 
 const mockPoints = [
   {
-    id: 'point-1',
+    id: nanoid(),
     basePrice: 1100,
     dateFrom: '2025-07-10T22:55:56.845Z',
     dateTo: '2025-07-11T11:22:13.375Z',
@@ -15,7 +16,7 @@ const mockPoints = [
     type: 'taxi'
   },
   {
-    id: 'point-2',
+    id: nanoid(),
     basePrice: 1300,
     dateFrom: '2026-01-25T22:55:56.845Z',
     dateTo: '2026-01-26T11:22:13.375Z',
@@ -25,7 +26,7 @@ const mockPoints = [
     type: 'bus'
   },
   {
-    id: 'point-3',
+    id: nanoid(),
     basePrice: 2500,
     dateFrom: '2026-01-13T00:55:56.845Z',
     dateTo: '2026-01-14T11:22:13.375Z',
@@ -35,7 +36,7 @@ const mockPoints = [
     type: 'drive'
   },
   {
-    id: 'point-4',
+    id: nanoid(),
     basePrice: 2200,
     dateFrom: '2025-09-01T09:00:00.000Z',
     dateTo: '2025-09-01T12:00:00.000Z',
@@ -48,7 +49,7 @@ const mockPoints = [
     type: 'flight'
   },
   {
-    id: 'point-5',
+    id: nanoid(),
     basePrice: 800,
     dateFrom: '2026-01-30T14:00:00.000Z',
     dateTo: '2026-02-01T16:30:00.000Z',
@@ -58,7 +59,7 @@ const mockPoints = [
     type: 'sightseeing'
   },
   {
-    id: 'point-6',
+    id: nanoid(),
     basePrice: 900,
     dateFrom: '2025-11-01T10:00:00.000Z',
     dateTo: '2025-12-01T12:00:00.000Z',
