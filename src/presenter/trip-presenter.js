@@ -1,9 +1,8 @@
-import { render, RenderPosition, replace } from '../framework/render.js';
+import { render, RenderPosition } from '../framework/render.js';
 import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
-import PointView from '../view/point-view.js';
-import FormView from '../view/form-view.js';
 import EmptyListView from '../view/empty-list-view.js';
+import PointPresenter from '../presenter/point-presenter.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -36,44 +35,11 @@ export default class TripPresenter {
   }
 
   #renderPoint(point) {
-    const destination = this.#pointsModel.getDestinationById(point.destination);
-    const offers = this.#pointsModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
-    const formOffers = this.#pointsModel.getOffersByType(point.type);
-
-    const pointView = new PointView({
-      point,
-      offers,
-      destination,
-      onEditClick: () => replacePointToForm()
+    const pointPresenter = new PointPresenter({
+      eventList: this.#eventList,
+      pointsModel: this.#pointsModel
     });
-
-    const formView = new FormView({
-      point,
-      offers: formOffers,
-      selectedOffers: point.offers,
-      destination,
-      isNew: false,
-      onSubmit: () => replaceFormToPoint(),
-      onRollupClick: () => replaceFormToPoint()
-    });
-
-    render(pointView, this.#eventList.element, RenderPosition.BEFOREEND);
-
-    const handleFormEscKeyDown = (evt) => {
-      if (evt.key === 'Escape') {
-        replaceFormToPoint();
-      }
-    };
-
-    function replacePointToForm() {
-      replace(formView, pointView);
-      document.addEventListener('keydown', handleFormEscKeyDown);
-    }
-
-    function replaceFormToPoint() {
-      replace(pointView, formView);
-      document.removeEventListener('keydown', handleFormEscKeyDown);
-    }
+    pointPresenter.init(point);
   }
 
   #renderApp() {
