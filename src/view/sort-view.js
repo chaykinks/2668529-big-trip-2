@@ -35,25 +35,26 @@ function createSortTemplate(currentSortType) {
 }
 
 export default class SortView extends AbstractView {
-  #onSortChange = null;
   #currentSortType = null;
+  #handleSortTypeChange = null;
 
-  constructor({ currentSortType, onSortChange }) {
+  constructor({ currentSortType, onSortTypeChange }) {
     super();
     this.#currentSortType = currentSortType;
-    this.#onSortChange = onSortChange;
-    this.element.addEventListener('click', this.#sortClickHandler);
+    this.#handleSortTypeChange = onSortTypeChange;
+    this.element.addEventListener('click', this.#sortTypeChangeHandler);
   }
 
   get template() {
     return createSortTemplate(this.#currentSortType);
   }
 
-  #sortClickHandler = (evt) => {
+  #sortTypeChangeHandler = (evt) => {
     const sortType = evt.target.dataset.sortType;
     if (!sortType) {
       return;
     }
-    this.#onSortChange(sortType);
+    evt.preventDefault();
+    this.#handleSortTypeChange(sortType);
   };
 }
