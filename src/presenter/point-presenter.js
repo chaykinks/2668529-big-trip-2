@@ -13,15 +13,15 @@ export default class PointPresenter {
   #point = null;
   #pointView = null;
   #formView = null;
-  #onDataChange = null;
-  #onModeChange = null;
+  #handleDataChange = null;
+  #handleModeChange = null;
   #mode = Mode.DEFAULT;
 
   constructor({ eventList, pointsModel, onDataChange, onModeChange }) {
     this.#eventList = eventList;
     this.#pointsModel = pointsModel;
-    this.#onDataChange = onDataChange;
-    this.#onModeChange = onModeChange;
+    this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init(point) {
@@ -69,7 +69,7 @@ export default class PointPresenter {
   destroy() {
     remove(this.#pointView);
     remove(this.#formView);
-    document.removeEventListener('keydown', this.#handleFormEscKeyDown);
+    //document.removeEventListener('keydown', this.#handleFormEscKeyDown);
   }
 
   resetView() {
@@ -80,8 +80,9 @@ export default class PointPresenter {
 
   #replacePointToForm() {
     replace(this.#formView, this.#pointView);
-    this.#mode = Mode.EDITING;
     document.addEventListener('keydown', this.#handleFormEscKeyDown);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   }
 
   #replaceFormToPoint() {
@@ -89,8 +90,8 @@ export default class PointPresenter {
       return;
     }
     replace(this.#pointView, this.#formView);
-    this.#mode = Mode.DEFAULT;
     document.removeEventListener('keydown', this.#handleFormEscKeyDown);
+    this.#mode = Mode.DEFAULT;
   }
 
   #handleFormEscKeyDown = (evt) => {
@@ -101,7 +102,7 @@ export default class PointPresenter {
   };
 
   #handleEditClick = () => {
-    this.#onModeChange();
+    this.#handleModeChange();
     this.#replacePointToForm();
   };
 
@@ -110,11 +111,11 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (updatedPoint) => {
-    this.#onDataChange(updatedPoint);
+    this.#handleDataChange(updatedPoint);
     this.#replaceFormToPoint();
   };
 
   #handleFavouriteClick = () => {
-    this.#onDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
   };
 }
