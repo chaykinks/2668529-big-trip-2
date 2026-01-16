@@ -5,6 +5,7 @@ import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from '../presenter/point-presenter.js';
 import { updateItem } from '../utils/common.js';
 import { SortType } from '../const.js';
+import { sortByDay, sortByTime, sortByPrice } from '../utils/date-time.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -28,6 +29,7 @@ export default class TripPresenter {
 
   #renderSort() {
     this.#sortComponent = new SortView({
+      currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange
     });
     render(this.#sortComponent, this.#tripEventsContainer, RenderPosition.AFTERBEGIN);
@@ -71,12 +73,31 @@ export default class TripPresenter {
     this.#allPointPresenters.clear();
   }
 
-  #handleSortTypeChange = (sortType) => {
-    // - Сортируем задачи
-    // - Очищаем список
-    // - Рендерим список заново
-  };
+  #sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.DAY:
+        this.#tripPoints.sort(sortByDay);
+        break;
 
+      case SortType.TIME:
+        this.#tripPoints.sort(sortByTime);
+        break;
+
+      case SortType.PRICE:
+        this.#tripPoints.sort(sortByPrice);
+        break;
+    }
+  }
+
+  #handleSortTypeChange = (newSortType) => {
+    if (this.#currentSortType === newSortType) {
+      return;
+    }
+    this.#currentSortType = newSortType;
+    this.#sortPoints(newSortType);
+    this.#clearEventList();
+    this.#renderPoints();
+  };
 
   #handlePointChange = (updatedPoint) => {
     this.#tripPoints = updateItem(this.#tripPoints, updatedPoint);
