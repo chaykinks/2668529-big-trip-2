@@ -1,4 +1,4 @@
-import { render, RenderPosition } from '../framework/render.js';
+import { render, remove, RenderPosition } from '../framework/render.js';
 import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
@@ -97,6 +97,8 @@ export default class TripPresenter {
     this.#currentSortType = newSortType;
     this.#sortPoints(newSortType);
     this.#clearEventList();
+    remove(this.#sortComponent);
+    this.#renderSort();
     this.#renderPoints();
   };
 
