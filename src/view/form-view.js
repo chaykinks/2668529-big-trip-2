@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeDateTime } from '../utils/date-time.js';
 import { POINTS_TYPE } from '../const.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
 const createTypeTemplate = (type, currentType, id) => {
   const isChecked = type === currentType ? 'checked' : '';
@@ -165,7 +166,7 @@ function createFormTemplate(point, offers, selectedOffers, destination, isNew) {
   `;
 }
 
-export default class FormView extends AbstractView {
+export default class FormView extends AbstractStatefulView {
   #onSubmit = null;
   #onRollupClick = null;
 
@@ -218,4 +219,8 @@ export default class FormView extends AbstractView {
     evt.preventDefault();
     this.#onRollupClick();
   };
+
+  _restoreHandlers() {
+    return undefined;
+  }
 }
