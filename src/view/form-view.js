@@ -1,7 +1,6 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeDateTime } from '../utils/date-time.js';
 import { POINTS_TYPE } from '../const.js';
-import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
 const createTypeTemplate = (type, currentType, id) => {
   const isChecked = type === currentType ? 'checked' : '';
@@ -87,7 +86,8 @@ const createDestinationTemplate = (destination) => {
 };
 
 
-function createFormTemplate(point, offers, selectedOffers, destination, isNew) {
+function createFormTemplate(state, isNew) {
+  const { point, offers, selectedOffers, destination } = state;
   const { id , type, dateFrom, dateTo, basePrice } = point;
   const destName = destination?.name ?? '';
 
@@ -169,16 +169,20 @@ function createFormTemplate(point, offers, selectedOffers, destination, isNew) {
 export default class FormView extends AbstractStatefulView {
   #onSubmit = null;
   #onRollupClick = null;
+  #pointsModel = null;
 
-  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick }) {
+  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, pointsModel }) {
     super();
-    this.point = point;
-    this.offers = offers;
-    this.selectedOffers = selectedOffers;
-    this.destination = destination;
+    this.#pointsModel = pointsModel;
+    this._setState({
+      point,
+      offers,
+      selectedOffers,
+      destination
+    });
     this.#onSubmit = onSubmit;
     this.#onRollupClick = onRollupClick;
-    this.#setHandlers();
+    this._restoreHandlers();
   }
 
   get isNew() {
@@ -187,10 +191,7 @@ export default class FormView extends AbstractStatefulView {
 
   get template() {
     return createFormTemplate(
-      this.point,
-      this.offers,
-      this.selectedOffers,
-      this.destination,
+      this._state,
       this.isNew
     );
   }
@@ -203,16 +204,25 @@ export default class FormView extends AbstractStatefulView {
     return this.element.querySelector('.event__rollup-btn');
   }
 
-  #setHandlers() {
+  _restoreHandlers() {
     this.formElement.addEventListener('submit', this.#formSubmitHandler);
     if (!this.isNew) {
       this.rollupButton.addEventListener('click', this.#rollupClickHandler);
     }
+    this.element
+      .querySelector('.event__type-group')
+      .addEventListener('change', this.#typeChangeHandler);
+    this.element
+      .querySelector('.event__input--destination')
+      .addEventListener('input', this.#destinationInputHandler);
+    this.element
+      .querySelector('.event__available-offers')
+      .addEventListener('change', this.#offersChangeHandler);
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#onSubmit(this.point);
+    this.#onSubmit(this._state.point);
   };
 
   #rollupClickHandler = (evt) => {
@@ -220,7 +230,48 @@ export default class FormView extends AbstractStatefulView {
     this.#onRollupClick();
   };
 
-  _restoreHandlers() {
-    return undefined;
-  }
+  #typeChangeHandler = (evt) => {
+    const newType = evt.target.value;
+    const offers = this.#pointsModel.getOffersByType(newType);
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        type: newType,
+        offers: []
+      },
+      offers,
+      selectedOffers: [],
+    });
+  };
+
+  #destinationInputHandler = (evt) => {
+    const name = evt.target.value;
+    const destination = this.#pointsModel.getDestinationByName(name);
+    this.updateElement({
+      destination,
+      point: {
+        ...this._state.point,
+        destination: destination?.id ?? null,
+      }
+    });
+  };
+
+  #offersChangeHandler = (evt) => {
+    const id = Number(evt.target.id.replace('event-offer-', ''));
+    const selected = new Set(this._state.selectedOffers);
+
+    if (evt.target.checked) {
+      selected.add(id);
+    } else {
+      selected.delete(id);
+    }
+
+    this._setState({
+      selectedOffers: [...selected],
+      point: {
+        ...this._state.point,
+        offers: [...selected]
+      }
+    });
+  };
 }
