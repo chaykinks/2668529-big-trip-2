@@ -206,7 +206,10 @@ export default class FormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#onSubmit(this._state.point);
+    this.#onSubmit({
+      ...this._state.point,
+      offers: this._state.selectedOffers
+    });
   };
 
   #rollupClickHandler = (evt) => {
@@ -254,8 +257,7 @@ export default class FormView extends AbstractStatefulView {
       selected.delete(id);
     }
 
-    this.updateElement({
-      point: { ...this._state.point, offers: [...selected] },
+    this._setState({
       selectedOffers: [...selected]
     });
   };

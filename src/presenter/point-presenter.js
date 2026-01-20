@@ -91,6 +91,11 @@ export default class PointPresenter {
     if (this.#mode === Mode.DEFAULT) {
       return;
     }
+    this.#formView.updateElement({
+      point: this.#point,
+      selectedOffers: this.#point.offers,
+      destination: this.#pointsModel.getDestinationById(this.#point.destination)
+    });
     replace(this.#pointView, this.#formView);
     document.removeEventListener('keydown', this.#handleFormEscKeyDown);
     this.#mode = Mode.DEFAULT;
