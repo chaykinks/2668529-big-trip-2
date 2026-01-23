@@ -166,19 +166,21 @@ function createFormTemplate(state, allDestinations = []) {
 }
 
 export default class FormView extends AbstractStatefulView {
-  #onSubmit = null;
-  #onRollupClick = null;
+  #handleFormSubmit = null;
+  #handleRollupClick = null;
+  #handleDeleteClick = null;
   #pointsModel = null;
   #allDestinations = [];
   #datepickerStart = null;
   #datepickerEnd = null;
 
-  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, pointsModel, allDestinations }) {
+  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, onDeleteClick, pointsModel, allDestinations }) {
     super();
     this.#pointsModel = pointsModel;
     this.#allDestinations = allDestinations;
-    this.#onSubmit = onSubmit;
-    this.#onRollupClick = onRollupClick;
+    this.#handleFormSubmit = onSubmit;
+    this.#handleRollupClick = onRollupClick;
+    this.#handleDeleteClick = onDeleteClick;
     this._setState({point, offers, selectedOffers, destination});
     this._restoreHandlers();
   }
@@ -214,18 +216,24 @@ export default class FormView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination')?.addEventListener('input', this.#destinationInputHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offersChangeHandler);
     this.element.querySelector('.event__input--price')?.addEventListener('input', this.#priceChangeHandler);
+    this.element.querySelector('.event__reset-btn')?.addEventListener('click', this.#formDeleteClickHandler);
     this.#setDatePickers();
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     const updatedPoint = {...this._state.point, offers: this._state.selectedOffers};
-    this.#onSubmit(updatedPoint);
+    this.#handleFormSubmit(updatedPoint);
   };
 
   #rollupClickHandler = (evt) => {
     evt.preventDefault();
-    this.#onRollupClick();
+    this.#handleRollupClick();
+  };
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(this._state.point);
   };
 
   #typeChangeHandler = (evt) => {

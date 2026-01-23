@@ -53,6 +53,7 @@ export default class PointPresenter {
       allDestinations: this.#allDestinations,
       onSubmit: this.#handleFormSubmit,
       onRollupClick: this.#handleRollupClick,
+      onDeleteClick: this.#handleDeleteClick
     });
 
     if (!prevPointView && !prevFormView) {
@@ -125,5 +126,9 @@ export default class PointPresenter {
 
   #handleFavouriteClick = () => {
     this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, {...this.#point, isFavorite: !this.#point.isFavorite});
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(UserAction.DELETE_POINT, UpdateType.MINOR, point);
   };
 }
