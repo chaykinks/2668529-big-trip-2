@@ -213,7 +213,7 @@ export default class FormView extends AbstractStatefulView {
     this.formElement.addEventListener('submit', this.#formSubmitHandler);
     this.rollupButton?.addEventListener('click', this.#rollupClickHandler);
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#typeChangeHandler);
-    this.element.querySelector('.event__input--destination')?.addEventListener('input', this.#destinationInputHandler);
+    this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#destinationInputHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offersChangeHandler);
     this.element.querySelector('.event__input--price')?.addEventListener('input', this.#priceChangeHandler);
     this.element.querySelector('.event__reset-btn')?.addEventListener('click', this.#formDeleteClickHandler);

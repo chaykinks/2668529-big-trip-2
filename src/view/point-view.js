@@ -13,7 +13,7 @@ function createOfferTemplate(offer) {
 
 function createPointTemplate(point, offers = [], destination) {
   const {basePrice, dateFrom, dateTo, type, isFavorite} = point;
-  const {name} = destination;
+  const name = destination?.name ?? '';
   const eventDuration = getEventDuration(point.dateFrom, point.dateTo);
 
   return (
