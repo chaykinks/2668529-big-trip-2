@@ -3,6 +3,7 @@ import { humanizeDateTime } from '../utils/date-time.js';
 import { POINTS_TYPE } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 const createTypeTemplate = (type, currentType, id) => {
   const isChecked = type === currentType ? 'checked' : '';
@@ -115,7 +116,7 @@ function createFormTemplate(state, allDestinations = []) {
               id="event-destination-${id}"
               type="text"
               name="event-destination"
-              value="${destName}"
+              value="${he.encode(destName)}"
               list="destination-list-${id}">
             <datalist id="destination-list-${id}">
               ${destinationOptions}
@@ -274,17 +275,16 @@ export default class FormView extends AbstractStatefulView {
   };
 
   #priceChangeHandler = (evt) => {
-    let value = evt.target.value.trim();
-    if (value.startsWith('-')) {
-      value = value.replace('-', '');
-    }
-    if (value === '') {
-      evt.target.value = '';
-      return;
-    }
-    const newPrice = Math.max(0, parseInt(value, 10) || 0);
-    evt.target.value = newPrice;
-    this._setState({point: {...this._state.point, basePrice: newPrice}});
+    // Оставляем только цифры
+    const digitsOnly = evt.target.value.replace(/\D+/g, '');
+
+    evt.target.value = digitsOnly;
+
+    const newPrice = digitsOnly === '' ? '' : Number(digitsOnly);
+
+    this._setState({
+      point: { ...this._state.point, basePrice: newPrice || 0 }
+    });
   };
 
   #startDateChangeHandler = ([selectedDate]) => {
