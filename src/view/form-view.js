@@ -170,14 +170,14 @@ export default class FormView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleRollupClick = null;
   #handleDeleteClick = null;
-  #pointsModel = null;
+  #offersModel = null;
   #allDestinations = [];
   #datepickerStart = null;
   #datepickerEnd = null;
 
-  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, onDeleteClick, pointsModel, allDestinations }) {
+  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, onDeleteClick, offersModel, allDestinations }) {
     super();
-    this.#pointsModel = pointsModel;
+    this.#offersModel = offersModel;
     this.#allDestinations = allDestinations;
     this.#handleFormSubmit = onSubmit;
     this.#handleRollupClick = onRollupClick;
@@ -239,7 +239,7 @@ export default class FormView extends AbstractStatefulView {
 
   #typeChangeHandler = (evt) => {
     const newType = evt.target.value;
-    const offers = this.#pointsModel.getOffersByType(newType);
+    const offers = this.#offersModel.getOffersByType(newType);
     this.updateElement({point: { ...this._state.point, type: newType, offers: [] }, offers, selectedOffers: []});
   };
 
@@ -275,7 +275,6 @@ export default class FormView extends AbstractStatefulView {
   };
 
   #priceChangeHandler = (evt) => {
-    // Оставляем только цифры
     const digitsOnly = evt.target.value.replace(/\D+/g, '');
 
     evt.target.value = digitsOnly;

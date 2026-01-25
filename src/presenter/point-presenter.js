@@ -11,7 +11,8 @@ const Mode = {
 export default class PointPresenter {
   #eventList = null;
   #pointsModel = null;
-  #allDestinations = [];
+  #destinationsModel = null;
+  #offersModel = null;
   #point = null;
   #pointView = null;
   #formView = null;
@@ -19,10 +20,11 @@ export default class PointPresenter {
   #handleModeChange = null;
   #mode = Mode.DEFAULT;
 
-  constructor({ eventList, pointsModel, allDestinations, onDataChange, onModeChange }) {
+  constructor({ eventList, pointsModel, offersModel, destinationsModel, onDataChange, onModeChange }) {
     this.#eventList = eventList;
     this.#pointsModel = pointsModel;
-    this.#allDestinations = allDestinations;
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
@@ -30,9 +32,9 @@ export default class PointPresenter {
   init(point) {
     this.#point = point;
 
-    const destination = this.#pointsModel.getDestinationById(point.destination);
-    const offers = this.#pointsModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
-    const formOffers = this.#pointsModel.getOffersByType(point.type);
+    const destination = this.#destinationsModel.getDestinationById(point.destination);
+    const offers = this.#offersModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
+    const formOffers = this.#offersModel.getOffersByType(point.type);
     const prevPointView = this.#pointView;
     const prevFormView = this.#formView;
 
@@ -49,8 +51,8 @@ export default class PointPresenter {
       offers: formOffers,
       selectedOffers: point.offers.filter((id) => formOffers.some((offer) => offer.id === id)),
       destination,
-      pointsModel: this.#pointsModel,
-      allDestinations: this.#allDestinations,
+      offersModel: this.#offersModel,
+      allDestinations: this.#destinationsModel.destinations,
       onSubmit: this.#handleFormSubmit,
       onRollupClick: this.#handleRollupClick,
       onDeleteClick: this.#handleDeleteClick
@@ -96,7 +98,7 @@ export default class PointPresenter {
     this.#formView.updateElement({
       point: this.#point,
       selectedOffers: this.#point.offers,
-      destination: this.#pointsModel.getDestinationById(this.#point.destination)
+      destination: this.#destinationsModel.getDestinationById(this.#point.destination)
     });
     replace(this.#pointView, this.#formView);
     document.removeEventListener('keydown', this.#handleFormEscKeyDown);

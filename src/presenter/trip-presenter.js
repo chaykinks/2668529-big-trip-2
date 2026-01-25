@@ -4,15 +4,16 @@ import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from '../presenter/point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
-import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortByDay, sortByTime, sortByPrice } from '../utils/date-time.js';
-import {filter} from '../utils/filter.js';
+import { filter } from '../utils/filter.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
   #pointsModel = null;
+  #offersModel = null;
+  #destinationsModel = null;
   #filterModel = null;
-  #allDestinations = [];
   #eventList = new PointListView();
   #emptyList = null;
   #sortComponent = null;
@@ -21,16 +22,19 @@ export default class TripPresenter {
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
-  constructor({ tripEventsContainer, pointsModel, filterModel, onNewPointDestroy }) {
+  constructor({ tripEventsContainer, pointsModel, offersModel, destinationsModel, filterModel, onNewPointDestroy }) {
     this.#tripEventsContainer = tripEventsContainer;
     this.#pointsModel = pointsModel;
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
     this.#filterModel = filterModel;
     this.#newPointPresenter = new NewPointPresenter({
       eventList: this.#eventList,
+      pointsModel: this.#pointsModel,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
       onDataChange: this.#handleViewAction,
       onDestroy: onNewPointDestroy,
-      pointsModel: this.#pointsModel,
-      allDestinations: this.#allDestinations
     });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -55,7 +59,7 @@ export default class TripPresenter {
   }
 
   init() {
-    this.#allDestinations = [...this.#pointsModel.destinations];
+    //this.#allDestinations = this.#destinationsModel.destinations;
     this.#renderApp();
   }
 
@@ -91,7 +95,8 @@ export default class TripPresenter {
     const pointPresenter = new PointPresenter({
       eventList: this.#eventList,
       pointsModel: this.#pointsModel,
-      allDestinations: this.#allDestinations,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
       onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange
     });

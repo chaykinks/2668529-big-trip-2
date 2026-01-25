@@ -18,14 +18,16 @@ export default class NewPointPresenter {
   #handleDestroy = null;
   #formView = null;
   #pointsModel = null;
-  #allDestinations = null;
+  #offersModel = null;
+  #destinationsModel = null;
 
-  constructor({ eventList, onDataChange, onDestroy, pointsModel, allDestinations }) {
+  constructor({ eventList, onDataChange, onDestroy, pointsModel, offersModel, destinationsModel }) {
     this.#eventList = eventList;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
     this.#pointsModel = pointsModel;
-    this.#allDestinations = allDestinations;
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
   }
 
   init() {
@@ -38,8 +40,8 @@ export default class NewPointPresenter {
       offers: [],
       selectedOffers: [],
       destination: null,
-      pointsModel: this.#pointsModel,
-      allDestinations: this.#allDestinations,
+      offersModel: this.#offersModel,
+      allDestinations: this.#destinationsModel.destinations,
       onSubmit: this.#handleFormSubmit,
       onRollupClick: this.#handleRollupClick,
       onDeleteClick: this.#handleDeleteClick
