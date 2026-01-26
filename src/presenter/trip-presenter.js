@@ -66,6 +66,12 @@ export default class TripPresenter {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
+
+    if (this.#emptyList) {
+      remove(this.#emptyList);
+      this.#emptyList = null;
+    }
+
     this.#newPointPresenter.init();
   }
 
@@ -104,12 +110,14 @@ export default class TripPresenter {
   }
 
   #renderApp() {
+    this.#renderEventList(); // рендерим контейнер всегда
+
     if (this.tripPoints.length === 0) {
-      this.#renderEmptyList();
+      this.#renderEmptyList(); // рендерим заглушку
       return;
     }
+
     this.#renderSort();
-    this.#renderEventList();
     this.#renderPoints();
   }
 
