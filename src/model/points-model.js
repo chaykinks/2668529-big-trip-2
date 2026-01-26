@@ -1,12 +1,18 @@
-import { mockPoints } from '../mock/points.js';
+//import { mockPoints } from '../mock/points.js';
 import Observable from '../framework/observable.js';
 
 export default class PointsModel extends Observable {
+  #pointsApiService = null;
   #points = [];
 
-  constructor() {
+  constructor({ pointsApiService }) {
     super();
-    this.#points = mockPoints;
+    this.#pointsApiService = pointsApiService;
+
+    this.#pointsApiService.points.then((points) => {
+      // eslint-disable-next-line no-console
+      console.log(points);
+    });
   }
 
   get points() {
