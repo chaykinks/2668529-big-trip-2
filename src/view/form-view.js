@@ -3,6 +3,7 @@ import { humanizeDateTime } from '../utils/date-time.js';
 import { POINTS_TYPE } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 const createTypeTemplate = (type, currentType, id) => {
   const isChecked = type === currentType ? 'checked' : '';
@@ -115,7 +116,7 @@ function createFormTemplate(state, allDestinations = []) {
               id="event-destination-${id}"
               type="text"
               name="event-destination"
-              value="${destName}"
+              value="${he.encode(destName)}"
               list="destination-list-${id}">
             <datalist id="destination-list-${id}">
               ${destinationOptions}
@@ -166,25 +167,29 @@ function createFormTemplate(state, allDestinations = []) {
 }
 
 export default class FormView extends AbstractStatefulView {
-  #onSubmit = null;
-  #onRollupClick = null;
-  #pointsModel = null;
-  #allDestinations = [];
+  #handleFormSubmit = null;
+  #handleRollupClick = null;
+  #handleDeleteClick = null;
+  #offersModel = null;
+  #destinationsModel = null;
   #datepickerStart = null;
   #datepickerEnd = null;
+  #handleCancelClick = null;
 
-  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, pointsModel, allDestinations }) {
+  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, onDeleteClick, onCancelClick, offersModel, destinationsModel }) {
     super();
-    this.#pointsModel = pointsModel;
-    this.#allDestinations = allDestinations;
-    this.#onSubmit = onSubmit;
-    this.#onRollupClick = onRollupClick;
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
+    this.#handleFormSubmit = onSubmit;
+    this.#handleRollupClick = onRollupClick;
+    this.#handleDeleteClick = onDeleteClick;
+    this.#handleCancelClick = onCancelClick;
     this._setState({point, offers, selectedOffers, destination});
     this._restoreHandlers();
   }
 
   get template() {
-    return createFormTemplate(this._state, this.#allDestinations);
+    return createFormTemplate(this._state, this.#destinationsModel.destinations);
   }
 
   removeElement() {
@@ -208,10 +213,16 @@ export default class FormView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
+    const resetBtn = this.element.querySelector('.event__reset-btn');
+    if (this._state.point.id === null) {
+      resetBtn.addEventListener('click', this.#cancelClickHandler);
+    } else {
+      resetBtn.addEventListener('click', this.#formDeleteClickHandler);
+    }
     this.formElement.addEventListener('submit', this.#formSubmitHandler);
     this.rollupButton?.addEventListener('click', this.#rollupClickHandler);
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#typeChangeHandler);
-    this.element.querySelector('.event__input--destination')?.addEventListener('input', this.#destinationInputHandler);
+    this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#destinationInputHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offersChangeHandler);
     this.element.querySelector('.event__input--price')?.addEventListener('input', this.#priceChangeHandler);
     this.#setDatePickers();
@@ -220,23 +231,33 @@ export default class FormView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     const updatedPoint = {...this._state.point, offers: this._state.selectedOffers};
-    this.#onSubmit(updatedPoint);
+    this.#handleFormSubmit(updatedPoint);
   };
 
   #rollupClickHandler = (evt) => {
     evt.preventDefault();
-    this.#onRollupClick();
+    this.#handleRollupClick();
+  };
+
+  #cancelClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCancelClick();
+  };
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(this._state.point);
   };
 
   #typeChangeHandler = (evt) => {
     const newType = evt.target.value;
-    const offers = this.#pointsModel.getOffersByType(newType);
+    const offers = this.#offersModel.getOffersByType(newType);
     this.updateElement({point: { ...this._state.point, type: newType, offers: [] }, offers, selectedOffers: []});
   };
 
   #destinationInputHandler = (evt) => {
     const name = evt.target.value.trim();
-    const destination = this.#allDestinations.find((dest) => dest.name === name);
+    const destination = this.#destinationsModel.destinations.find((dest) => dest.name === name);
     if (!destination) {
       evt.target.value = '';
       return;
@@ -266,17 +287,15 @@ export default class FormView extends AbstractStatefulView {
   };
 
   #priceChangeHandler = (evt) => {
-    let value = evt.target.value.trim();
-    if (value.startsWith('-')) {
-      value = value.replace('-', '');
-    }
-    if (value === '') {
-      evt.target.value = '';
-      return;
-    }
-    const newPrice = Math.max(0, parseInt(value, 10) || 0);
-    evt.target.value = newPrice;
-    this._setState({point: {...this._state.point, basePrice: newPrice}});
+    const digitsOnly = evt.target.value.replace(/\D+/g, '');
+
+    evt.target.value = digitsOnly;
+
+    const newPrice = digitsOnly === '' ? '' : Number(digitsOnly);
+
+    this._setState({
+      point: { ...this._state.point, basePrice: newPrice || 0 }
+    });
   };
 
   #startDateChangeHandler = ([selectedDate]) => {

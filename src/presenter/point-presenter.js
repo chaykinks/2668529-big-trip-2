@@ -1,6 +1,7 @@
 import { render, replace, RenderPosition, remove } from '../framework/render.js';
 import PointView from '../view/point-view.js';
 import FormView from '../view/form-view.js';
+import { UpdateType, UserAction } from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -10,7 +11,8 @@ const Mode = {
 export default class PointPresenter {
   #eventList = null;
   #pointsModel = null;
-  #allDestinations = [];
+  #destinationsModel = null;
+  #offersModel = null;
   #point = null;
   #pointView = null;
   #formView = null;
@@ -18,10 +20,11 @@ export default class PointPresenter {
   #handleModeChange = null;
   #mode = Mode.DEFAULT;
 
-  constructor({ eventList, pointsModel, allDestinations, onDataChange, onModeChange }) {
+  constructor({ eventList, pointsModel, offersModel, destinationsModel, onDataChange, onModeChange }) {
     this.#eventList = eventList;
     this.#pointsModel = pointsModel;
-    this.#allDestinations = allDestinations;
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
@@ -29,9 +32,9 @@ export default class PointPresenter {
   init(point) {
     this.#point = point;
 
-    const destination = this.#pointsModel.getDestinationById(point.destination);
-    const offers = this.#pointsModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
-    const formOffers = this.#pointsModel.getOffersByType(point.type);
+    const destination = this.#destinationsModel.getDestinationById(point.destination) || {id: null, name: '', description: '', pictures: []};
+    const offers = this.#offersModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
+    const formOffers = this.#offersModel.getOffersByType(point.type) || [];
     const prevPointView = this.#pointView;
     const prevFormView = this.#formView;
 
@@ -48,10 +51,11 @@ export default class PointPresenter {
       offers: formOffers,
       selectedOffers: point.offers.filter((id) => formOffers.some((offer) => offer.id === id)),
       destination,
-      pointsModel: this.#pointsModel,
-      allDestinations: this.#allDestinations,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
       onSubmit: this.#handleFormSubmit,
       onRollupClick: this.#handleRollupClick,
+      onDeleteClick: this.#handleDeleteClick
     });
 
     if (!prevPointView && !prevFormView) {
@@ -81,9 +85,9 @@ export default class PointPresenter {
   }
 
   #replacePointToForm() {
+    this.#handleModeChange();
     replace(this.#formView, this.#pointView);
     document.addEventListener('keydown', this.#handleFormEscKeyDown);
-    this.#handleModeChange();
     this.#mode = Mode.EDITING;
   }
 
@@ -94,7 +98,7 @@ export default class PointPresenter {
     this.#formView.updateElement({
       point: this.#point,
       selectedOffers: this.#point.offers,
-      destination: this.#pointsModel.getDestinationById(this.#point.destination)
+      destination: this.#destinationsModel.getDestinationById(this.#point.destination)
     });
     replace(this.#pointView, this.#formView);
     document.removeEventListener('keydown', this.#handleFormEscKeyDown);
@@ -109,7 +113,6 @@ export default class PointPresenter {
   };
 
   #handleEditClick = () => {
-    this.#handleModeChange();
     this.#replacePointToForm();
   };
 
@@ -118,11 +121,15 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (updatedPoint) => {
-    this.#handleDataChange(updatedPoint);
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.PATCH, updatedPoint);
     this.#replaceFormToPoint();
   };
 
   #handleFavouriteClick = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, {...this.#point, isFavorite: !this.#point.isFavorite});
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(UserAction.DELETE_POINT, UpdateType.MINOR, point);
   };
 }
