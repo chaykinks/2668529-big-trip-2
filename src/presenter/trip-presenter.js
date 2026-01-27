@@ -4,6 +4,8 @@ import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from '../presenter/point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
+import LoadingView from '../view/loading-view.js';
+import LoadingErrorView from '../view/loading-error-view.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortByDay, sortByTime, sortByPrice } from '../utils/date-time.js';
 import { filter } from '../utils/filter.js';
@@ -14,13 +16,17 @@ export default class TripPresenter {
   #offersModel = null;
   #destinationsModel = null;
   #filterModel = null;
-  #eventList = new PointListView();
   #emptyList = null;
   #sortComponent = null;
-  #allPointPresenters = new Map();
   #newPointPresenter = null;
+  #loadingErrorComponent = new LoadingErrorView();
+  #loadingComponent = new LoadingView();
+  #eventList = new PointListView();
+  #allPointPresenters = new Map();
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
+  #isLoadingError = false;
 
   constructor({ tripEventsContainer, pointsModel, offersModel, destinationsModel, filterModel, onNewPointDestroy }) {
     this.#tripEventsContainer = tripEventsContainer;
@@ -83,6 +89,14 @@ export default class TripPresenter {
     render(this.#sortComponent, this.#tripEventsContainer, RenderPosition.AFTERBEGIN);
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#tripEventsContainer);
+  }
+
+  #renderLoadingError() {
+    render(this.#loadingErrorComponent, this.#tripEventsContainer);
+  }
+
   #renderEmptyList() {
     this.#emptyList = new EmptyListView({filterType: this.#filterType });
     render(this.#emptyList, this.#tripEventsContainer);
@@ -110,10 +124,20 @@ export default class TripPresenter {
   }
 
   #renderApp() {
-    this.#renderEventList(); // рендерим контейнер всегда
+    this.#renderEventList();
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
+    if (this.#isLoadingError) {
+      this.#renderLoadingError();
+      return;
+    }
 
     if (this.tripPoints.length === 0) {
-      this.#renderEmptyList(); // рендерим заглушку
+      this.#renderEmptyList();
       return;
     }
 
@@ -129,6 +153,7 @@ export default class TripPresenter {
   #clearApp() {
     this.#clearEventList();
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
     remove(this.#emptyList);
     remove(this.#eventList);
   }
@@ -166,6 +191,16 @@ export default class TripPresenter {
       case UpdateType.MINOR:
       case UpdateType.MAJOR:
         this.#clearApp();
+        this.#renderApp();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderApp();
+        break;
+      case UpdateType.LOADING_ERROR:
+        this.#isLoading = false;
+        this.#isLoadingError = true;
         this.#renderApp();
         break;
     }

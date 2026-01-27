@@ -23,6 +23,8 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  LOADING_ERROR: 'LOADING_ERROR',
 };
 
 export { POINTS_TYPE, FilterType, SortType, UserAction, UpdateType };
