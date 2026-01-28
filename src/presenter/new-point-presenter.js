@@ -38,7 +38,7 @@ export default class NewPointPresenter {
 
     this.#formView = new FormView({
       point: BLANK_POINT,
-      offers: [],
+      offers: this.#offersModel.getOffersByType(BLANK_POINT.type),
       selectedOffers: [],
       destination: null,
       offersModel: this.#offersModel,
@@ -48,7 +48,6 @@ export default class NewPointPresenter {
     });
 
     render(this.#formView, this.#eventList.element, RenderPosition.AFTERBEGIN);
-
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
@@ -62,9 +61,23 @@ export default class NewPointPresenter {
     this.#handleDestroy?.();
   }
 
+  setSaving() {
+    this.#formView.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  /*setAborting() {
+    this.#formView.shake();
+    this.#formView.updateElement({
+      isDisabled: false,
+      isSaving: false
+    });
+  }*/
+
   #handleFormSubmit = (point) => {
     this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MINOR, point);
-    this.destroy();
   };
 
   #handleCancelClick = () => {
