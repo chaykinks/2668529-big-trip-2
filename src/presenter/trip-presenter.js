@@ -84,6 +84,11 @@ export default class TripPresenter {
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
 
+    if (this.#loadingErrorComponent) {
+      remove(this.#loadingErrorComponent);
+      this.#isLoadingError = false;
+    }
+
     if (this.#emptyList) {
       remove(this.#emptyList);
       this.#emptyList = null;
