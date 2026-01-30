@@ -217,6 +217,10 @@ export default class TripPresenter {
         this.#allPointPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
+        this.#newPointPresenter.destroy();
+        this.#clearApp();
+        this.#renderApp();
+        break;
       case UpdateType.MAJOR:
         this.#clearApp();
         this.#renderApp();
@@ -229,6 +233,7 @@ export default class TripPresenter {
       case UpdateType.LOADING_ERROR:
         this.#isLoading = false;
         this.#isLoadingError = true;
+        remove(this.#loadingComponent);
         this.#renderApp();
         break;
     }
