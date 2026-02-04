@@ -227,6 +227,7 @@ export default class TripPresenter {
         this.#renderApp();
         break;
       case UpdateType.MAJOR:
+        this.#currentSortType = SortType.DAY;
         this.#clearApp();
         this.#renderApp();
         break;
