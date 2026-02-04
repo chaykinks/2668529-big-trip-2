@@ -32,7 +32,7 @@ export default class PointPresenter {
   init(point) {
     this.#point = point;
 
-    const destination = this.#destinationsModel.getDestinationById(point.destination) || {id: null, name: '', description: '', pictures: []};
+    const destination = this.#destinationsModel.getDestinationById(point.destination);
     const offers = this.#offersModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
     const formOffers = this.#offersModel.getOffersByType(point.type) || [];
     const prevPointView = this.#pointView;

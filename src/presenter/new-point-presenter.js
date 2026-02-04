@@ -5,7 +5,7 @@ import {UserAction, UpdateType} from '../const.js';
 const BLANK_POINT = {
   id: null,
   type: 'flight',
-  destination: '',
+  destination: null,
   dateFrom: null,
   dateTo: null,
   basePrice: 0,
