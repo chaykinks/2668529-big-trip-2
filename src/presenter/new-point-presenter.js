@@ -6,8 +6,8 @@ const BLANK_POINT = {
   id: null,
   type: POINTS_TYPE[0],
   destination: '',
-  dateFrom: new Date(),
-  dateTo: new Date(),
+  dateFrom: null,
+  dateTo: null,
   basePrice: 0,
   isFavorite: false,
   offers: []
