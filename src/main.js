@@ -53,11 +53,10 @@ function handleNewPointButtonClick() {
 
 filterPresenter.init();
 tripPresenter.init();
-Promise.all([
-  pointsModel.init(),
-  offersModel.init(),
-  destinationsModel.init(),
-])
-  .finally(() => {
-    render(newPointButtonComponent, newPointButtonContainer);
-  });
+setTimeout(() => {
+  pointsModel.init();
+  offersModel.init();
+  destinationsModel.init();
+
+  render(newPointButtonComponent, newPointButtonContainer);
+}, 0);

@@ -31,9 +31,10 @@ export default class TripPresenter {
   #allPointPresenters = new Map();
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
-  #loadedModelsCount = 0;
+  #loadingCount = 3;
   #isLoading = true;
   #isLoadingError = false;
+  #hasLoadingError = false;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
@@ -84,7 +85,7 @@ export default class TripPresenter {
   }
 
   init() {
-    this.#renderApp();
+    this.#renderLoading();
   }
 
   createPoint() {
@@ -148,17 +149,19 @@ export default class TripPresenter {
   }
 
   #renderApp() {
+    this.#clearApp();
+
     if (this.#isLoading) {
       this.#renderLoading();
       return;
     }
 
-    this.#renderEventList();
-
     if (this.#isLoadingError) {
       this.#renderLoadingError();
       return;
     }
+
+    this.#renderEventList();
 
     if (this.tripPoints.length === 0) {
       this.#renderEmptyList();
@@ -175,11 +178,13 @@ export default class TripPresenter {
   }
 
   #clearApp() {
-    this.#clearEventList();
-    remove(this.#sortComponent);
     remove(this.#loadingComponent);
+    remove(this.#loadingErrorComponent);
     remove(this.#emptyList);
+    remove(this.#sortComponent);
     remove(this.#eventList);
+
+    this.#clearEventList();
   }
 
   #handleSortTypeChange = (newSortType) => {
@@ -239,34 +244,40 @@ export default class TripPresenter {
 
   #handleModelEvent = (updateType) => {
     switch (updateType) {
+
+      case UpdateType.INIT:
+        this.#loadingCount--;
+        if (this.#loadingCount === 0) {
+          this.#isLoading = false;
+          this.#isLoadingError = this.#hasLoadingError;
+          this.#renderApp();
+        }
+        break;
+
+      case UpdateType.LOADING_ERROR:
+        this.#hasLoadingError = true;
+        this.#loadingCount--;
+        if (this.#loadingCount === 0) {
+          this.#isLoading = false;
+          this.#isLoadingError = true;
+          this.#renderApp();
+        }
+        break;
+
+
       case UpdateType.PATCH:
-        this.#newPointPresenter.destroy();
         this.#clearEventList();
         this.#renderPoints();
         break;
+
+
       case UpdateType.MINOR:
-        this.#newPointPresenter.destroy();
-        this.#clearApp();
         this.#renderApp();
         break;
+
+
       case UpdateType.MAJOR:
         this.#currentSortType = SortType.DAY;
-        this.#clearApp();
-        this.#renderApp();
-        break;
-      case UpdateType.INIT:
-        this.#loadedModelsCount += 1;
-        if (this.#loadedModelsCount < 3) {
-          return;
-        }
-        this.#isLoading = false;
-        remove(this.#loadingComponent);
-        this.#renderApp();
-        break;
-      case UpdateType.LOADING_ERROR:
-        this.#isLoading = false;
-        this.#isLoadingError = true;
-        remove(this.#loadingComponent);
         this.#renderApp();
         break;
     }
