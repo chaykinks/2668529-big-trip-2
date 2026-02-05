@@ -207,11 +207,7 @@ export default class TripPresenter {
         try {
           await this.#pointsModel.updatePoint(updateType, update);
         } catch (err) {
-          if (presenter) {
-            presenter.setAborting();
-          } else {
-            this.#allPointPresenters.forEach((p) => p.setAborting());
-          }
+          presenter?.setAborting();
         }
         break;
       }
@@ -230,11 +226,7 @@ export default class TripPresenter {
         try {
           await this.#pointsModel.deletePoint(updateType, update);
         } catch (err) {
-          if (presenter) {
-            presenter.setAborting();
-          } else {
-            this.#allPointPresenters.forEach((p) => p.setAborting());
-          }
+          presenter?.setAborting();
         }
         break;
       }

@@ -103,7 +103,7 @@ export default class PointPresenter {
     }
   }
 
-  setAborting() {
+  /*setAborting() {
     if (this.#mode === Mode.EDITING) {
       this.#formView.shake(() => {
         this.#formView.updateElement({
@@ -114,6 +114,18 @@ export default class PointPresenter {
       });
       return;
     }
+    this.#pointView.shake();
+  }*/
+
+  setAborting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#formView.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    }
+    this.#formView.shake();
     this.#pointView.shake();
   }
 
