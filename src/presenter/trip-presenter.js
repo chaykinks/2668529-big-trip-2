@@ -196,30 +196,43 @@ export default class TripPresenter {
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
     switch (actionType) {
-      case UserAction.UPDATE_POINT:
-        this.#allPointPresenters.get(update.id).setSaving();
+      case UserAction.UPDATE_POINT: {
+        const presenter = this.#allPointPresenters.get(update.id);
+        presenter?.setSaving();
         try {
           await this.#pointsModel.updatePoint(updateType, update);
-        } catch(err) {
-          this.#allPointPresenters.get(update.id).setAborting();
+        } catch (err) {
+          if (presenter) {
+            presenter.setAborting();
+          } else {
+            this.#allPointPresenters.forEach((p) => p.setAborting());
+          }
         }
         break;
-      case UserAction.ADD_POINT:
+      }
+      case UserAction.ADD_POINT: {
         this.#newPointPresenter.setSaving();
         try {
           await this.#pointsModel.addPoint(updateType, update);
-        } catch(err) {
+        } catch (err) {
           this.#newPointPresenter.setAborting();
         }
         break;
-      case UserAction.DELETE_POINT:
-        this.#allPointPresenters.get(update.id).setDeleting();
+      }
+      case UserAction.DELETE_POINT: {
+        const presenter = this.#allPointPresenters.get(update.id);
+        presenter?.setDeleting();
         try {
           await this.#pointsModel.deletePoint(updateType, update);
-        } catch(err) {
-          this.#allPointPresenters.get(update.id).setAborting();
+        } catch (err) {
+          if (presenter) {
+            presenter.setAborting();
+          } else {
+            this.#allPointPresenters.forEach((p) => p.setAborting());
+          }
         }
         break;
+      }
     }
     this.#uiBlocker.unblock();
   };
