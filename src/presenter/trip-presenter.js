@@ -31,6 +31,7 @@ export default class TripPresenter {
   #allPointPresenters = new Map();
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #loadedModelsCount = 0;
   #isLoading = true;
   #isLoadingError = false;
   #uiBlocker = new UiBlocker({
@@ -55,6 +56,8 @@ export default class TripPresenter {
     });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#offersModel.addObserver(this.#handleModelEvent);
+    this.#destinationsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
@@ -140,12 +143,12 @@ export default class TripPresenter {
   }
 
   #renderApp() {
-    this.#renderEventList();
-
     if (this.#isLoading) {
       this.#renderLoading();
       return;
     }
+
+    this.#renderEventList();
 
     if (this.#isLoadingError) {
       this.#renderLoadingError();
@@ -232,6 +235,10 @@ export default class TripPresenter {
         this.#renderApp();
         break;
       case UpdateType.INIT:
+        this.#loadedModelsCount += 1;
+        if (this.#loadedModelsCount < 3) {
+          return;
+        }
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#renderApp();
