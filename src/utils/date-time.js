@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
-import { DATE_FORMAT, TIME_FORMAT, DATE_TIME_FORMAT } from '../const.js';
+
+const DATE_FORMAT = 'MMM DD';
+const TIME_FORMAT = 'HH:mm';
+const DATE_TIME_FORMAT = 'DD/MM/YY HH:mm';
 
 function humanizePointDate(date) {
   return date ? dayjs(date).format(DATE_FORMAT) : '';
