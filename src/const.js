@@ -1,3 +1,10 @@
+const AUTHORIZATION = 'Basic hS2sfS44wcl1hkdf3463Taskdef2j';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
+
+const DATE_FORMAT = 'MMM DD';
+const TIME_FORMAT = 'HH:mm';
+const DATE_TIME_FORMAT = 'DD/MM/YY HH:mm';
+
 const POINTS_TYPE = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const FilterType = {
@@ -27,4 +34,5 @@ const UpdateType = {
   LOADING_ERROR: 'LOADING_ERROR',
 };
 
-export { POINTS_TYPE, FilterType, SortType, UserAction, UpdateType };
+export { POINTS_TYPE, FilterType, SortType, UserAction, UpdateType,
+  AUTHORIZATION, END_POINT, DATE_FORMAT, TIME_FORMAT, DATE_TIME_FORMAT };

@@ -1,8 +1,5 @@
 import dayjs from 'dayjs';
-
-const DATE_FORMAT = 'MMM DD';
-const TIME_FORMAT = 'HH:mm';
-const DATE_TIME_FORMAT = 'DD/MM/YY HH:mm';
+import { DATE_FORMAT, TIME_FORMAT, DATE_TIME_FORMAT } from '../const.js';
 
 function humanizePointDate(date) {
   return date ? dayjs(date).format(DATE_FORMAT) : '';
@@ -58,8 +55,7 @@ const sortByTime = (a, b) => {
   return durationB - durationA;
 };
 
-const sortByPrice = (a, b) =>
-  b.basePrice - a.basePrice;
+const sortByPrice = (a, b) => b.basePrice - a.basePrice;
 
 const sortByDateFrom = (a, b) => a.dateFrom - b.dateFrom;
 
